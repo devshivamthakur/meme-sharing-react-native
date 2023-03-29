@@ -4,7 +4,6 @@ import { Colors, Fonts, images } from '../../Theme'
 import MyHeader from '../../Component/MyHeader'
 import withPreventDoubleClick from '../../Component/withPreventDoubleClick'
 const TouchableOpacityex = withPreventDoubleClick(TouchableOpacity)
-import AntDesign from 'react-native-vector-icons/AntDesign'
 import { EMAIL_REGEX, NAME_REGEX, USERNAME_REGEX } from '../../Utils'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { pickImageVideo, takeImageVideo, takePermission } from '../../Component/Helper'
@@ -12,7 +11,7 @@ import ChooseInterest from './ChooseInterest'
 import CustomButton from '../../Component/CustomButton'
 import { useFocusEffect } from '@react-navigation/native'
 const Filluserinfo = (props) => {
-  const [step, setStep] = React.useState(3)
+  const [step, setStep] = React.useState(1)
   const [email, setEmail] = React.useState('')
   const [emailerror, setEmailerror] = React.useState(null)
   const [name, setName] = React.useState('')
@@ -303,8 +302,15 @@ const Filluserinfo = (props) => {
       }
 
     }
+    if(step!=4){
 
-    setStep(step + 1)
+      setStep(step + 1)
+    }else{
+      //save into api
+      
+    }
+
+
   }
   const getSelected = (selectedInterest) => {
     setSelectedInterest(selectedInterest)
@@ -315,12 +321,12 @@ const Filluserinfo = (props) => {
   useFocusEffect(
     React.useCallback(() => {
       const onBackPress = () => {
-        if (step==0) {
+        if (step==1) {
           
           return true;
         } else {
           onBack()
-          return true;
+          return false;
         }
       };
 
@@ -358,19 +364,16 @@ const Filluserinfo = (props) => {
         />
       }
 
-      {
-        step == 4 && <TouchableOpacityex
-          style={styles.btn2}
+{
+        step == 4 && <CustomButton
+         
           onPress={next}
-        >
-          <Text
-            style={styles.btntxt}
-
-          >
-            Submit
-          </Text>
-        </TouchableOpacityex>
+          buttonStyle={styles.btn2}
+          title="Submit"
+          textStyle={styles.btntxt}
+        />
       }
+      
     </SafeAreaView>
   )
 }

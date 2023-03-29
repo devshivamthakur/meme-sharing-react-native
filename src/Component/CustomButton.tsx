@@ -28,6 +28,7 @@ const CustomButton = (props:CustomButtonProps) => {
     <LinearGradient
     colors={props.linerColor?props.linerColor:["#12C2E9","#C471ED","#F64F59","#F64F59"]}
     style={props.buttonStyle?props.buttonStyle:styles.buttonStyle}
+    start={{x: 0, y: 0}} end={{x: 1, y: 0}}
     >
         <TouchableOpacity
         onPress={props.onPress}

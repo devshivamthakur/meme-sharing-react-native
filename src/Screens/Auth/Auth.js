@@ -5,7 +5,7 @@ import withPreventDoubleClick from '../../Component/withPreventDoubleClick'
 import { normalize } from '../../../Normalize'
 const TouchableOpacityEx = withPreventDoubleClick(TouchableOpacity)
 
-const Auth = () => {
+const Auth = (props) => {
   const [fadeAnim] = React.useState(new Animated.Value(0))
   useEffect(() => {
     Animated.timing(
@@ -46,6 +46,9 @@ const Auth = () => {
       style={[styles.rowbtn,{
         marginTop:"25%"
       }]}
+      onPress={()=>{
+        props.navigation.navigate("Filluserinfo")
+      }}
       >
         <Image
         source={images.metamask}

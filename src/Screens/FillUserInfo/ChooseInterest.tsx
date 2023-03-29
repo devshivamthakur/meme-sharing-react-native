@@ -26,6 +26,7 @@ const ChooseInterest = (props:Props) => {
         return (
             <LinearGradient
                 colors={["#12C2E9", "#C471ED", "#F64F59", "#F64F59"]}
+                start={{x: 0, y: 1}} end={{x: 1, y: 0}}
                 style={[styles.linerstyle, selectedIndex[index]!=undefined ? {
 
                 } : {
