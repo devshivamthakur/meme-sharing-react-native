@@ -1,15 +1,17 @@
 import Home from './Screens/Home/Home';
 import React from 'react';
-import Create from './Screens/Create/Create';
-import Settings from './Screens/Settings/Settings';
 import VectorIcon from "./Component/VectorIcons"
-import { useTheme } from 'react-native-paper';
 import { Image, View } from "react-native"
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { images } from './Theme';
 import Myprofile from './Screens/MyProfile/Myprofile';
-
-const Tab = createBottomTabNavigator();
+import CreateOptions from './Screens/CreateOptions/CreateOptions';
+export type BottomTabParamslist = {
+  Home: undefined;
+  Createoptions: undefined;
+  Myprofile: undefined;
+};
+const Tab = createBottomTabNavigator<BottomTabParamslist>();
 export function MyTabs() {
 
   const CreateIcon = () => {
@@ -70,7 +72,7 @@ export function MyTabs() {
         headerShown:false
 
       }}
-      initialRouteName="Myprofile"
+      initialRouteName="Createoptions"
 
 
 
@@ -107,7 +109,7 @@ export function MyTabs() {
         }}
 
       />
-      <Tab.Screen name="Create" component={Create}
+      <Tab.Screen name="Createoptions" component={CreateOptions}
 
         options={{
 

@@ -4,12 +4,13 @@ import LinearGradient from 'react-native-linear-gradient';
 
 interface LinerGradiantViewProps {
     children: ReactNode;
+    style?:object
 }
 
-const LinerGradiantView = ({ children }: LinerGradiantViewProps) => {
+const LinerGradiantView = ({ children,style }: LinerGradiantViewProps) => {
     return (
         <LinearGradient
-            style={styles.LinearGradient}
+            style={[styles.LinearGradient,style]}
             start={{x: 0, y: 1}} end={{x: 1, y: 1}}
             colors={['#ec9bcf', '#f1b9b7', '#f1b9b7', '#d6cced']}
         >

@@ -8,10 +8,11 @@ import Entypo from 'react-native-vector-icons/Entypo'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Feather from 'react-native-vector-icons/Feather'
 import EvilIcons from 'react-native-vector-icons/EvilIcons'
+import Octicons from 'react-native-vector-icons/Octicons'
 import React from 'react';
 interface IconProps {
   name: string;
-  family:"MaterialIcons"|"EvilIcons"|"Feather"|"MaterialCommunityIcons"|"Ionicons"| "AntDesign"|"FontAwesomeIcons"|"Fontisto"|"FontAwesome5"|"Entypo"|"FontAwesome";
+  family:"Octicons"|"MaterialIcons"|"EvilIcons"|"Feather"|"MaterialCommunityIcons"|"Ionicons"| "AntDesign"|"FontAwesomeIcons"|"Fontisto"|"FontAwesome5"|"Entypo"|"FontAwesome";
   size?: number;
   color?: string;
 }
@@ -26,7 +27,8 @@ const iconFamilies = {
   Entypo:Entypo,
   MaterialCommunityIcons:MaterialCommunityIcons,
   Feather:Feather,
-  EvilIcons:EvilIcons
+  EvilIcons:EvilIcons,
+  Octicons:Octicons
 };
 
 const VectorIcon: React.FC<IconProps> = ({ name, family, size = 30, color = '#000' }) => {

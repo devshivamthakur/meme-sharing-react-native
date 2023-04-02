@@ -5,11 +5,14 @@ import { Fonts } from '../Theme'
 const MyHeader = ({
     title,
     leftPress,
-    hideLeft=false
+    hideLeft=false,
+    color="#fff",
+    style={},
+    titlestyle={}
 }) => {
     return (
         <View
-            style={styles.container}
+            style={[styles.container,style]}
         >
             <TouchableOpacity
             onPress={()=>{
@@ -22,11 +25,11 @@ const MyHeader = ({
                 {!hideLeft&&<EvilIcons
                     name="arrow-left"
                     size={30}
-                    color="#fff"
+                    color={color}
                 />}
             </TouchableOpacity>
             <Text
-            style={styles.title}
+            style={[styles.title,titlestyle]}
             adjustsFontSizeToFit
             >
                 {title}
@@ -43,9 +46,8 @@ const styles = StyleSheet.create({
         backgroundColor: "transparent",
         padding:5,
         flexDirection: "row",
-        width:"55%",
+        width:"100%",
         alignItems:"center",
-        justifyContent:"space-between",
         marginTop:10
     },
     title:{
@@ -53,6 +55,10 @@ const styles = StyleSheet.create({
         fontSize:15,
         fontFamily:Fonts.normal,
         fontWeight:"600",
+        alignSelf:"center",
+        textAlign:"center",
+        width:"86%"
+
 
 
     }

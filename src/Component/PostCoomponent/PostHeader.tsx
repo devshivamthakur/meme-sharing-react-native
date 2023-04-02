@@ -7,7 +7,11 @@ import VectorIcon from '../VectorIcons'
 import withPreventDoubleClick from '../withPreventDoubleClick'
 const { width, height } = Dimensions.get("window")
 const TouchableOpacityEx = withPreventDoubleClick(TouchableOpacity);
-const PostHeader = () => {
+interface PostHeaderprops{
+    MenuPress:()=>void
+
+}
+const PostHeader = ({MenuPress}:PostHeaderprops) => {
     return (
         <View
             style={[styles.postHeader, styles.row]}
@@ -36,7 +40,12 @@ const PostHeader = () => {
                 </View>
             </View>
 
-            <TouchableOpacityEx>
+            <TouchableOpacityEx
+            onPress={()=>{
+                console.log("Press")
+                MenuPress()
+            }}
+            >
 
                 <VectorIcon
                     family='MaterialCommunityIcons'

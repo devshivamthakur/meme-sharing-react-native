@@ -5,16 +5,17 @@ import PostHeader from '../../Component/PostCoomponent/PostHeader'
 import PostMedia from '../../Component/PostCoomponent/PostMedia'
 import PostFooter from '../../Component/PostCoomponent/PostFooter'
 interface postViewprops{
-  item:any
+  item:any,
+  MenuPress:()=>void
 }
-const PostView = ({item}:postViewprops) => {
+const PostView = ({item,MenuPress}:postViewprops) => {
   return (
     <View
     style={styles.main}
     
     >
       <PostHeader
-
+      MenuPress={MenuPress}
       />
       <PostMedia
       mediaType={item.mediaType}
