@@ -12,8 +12,8 @@ import withPreventDoubleClick from '../../Component/withPreventDoubleClick'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AppStackParamList } from '../../Router'
 import { useNavigation } from '@react-navigation/native';
-
 type HomeNativeStackNavigationpros = NativeStackNavigationProp<AppStackParamList, 'SocialTab'>
+
 const { width, height } = Dimensions.get("window")
 
 const estimatedItemSize = height

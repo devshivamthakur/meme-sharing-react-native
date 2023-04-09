@@ -7,26 +7,36 @@ import withPreventDoubleClick from '../../Component/withPreventDoubleClick'
 import FastImage from 'react-native-fast-image'
 import { normalize } from '../../../Normalize'
 import LinearGradient from 'react-native-linear-gradient'
+import { AppStackParamList } from '../../Router'
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+type HomeNativeStackNavigationpros = NativeStackNavigationProp<AppStackParamList,"SocialTab">
+
 const TouchableOpacityex = withPreventDoubleClick(TouchableOpacity)
 type menuType = {
     title: string,
-    image: any
+    image: any,
+    type:string
 
 }
 const CreateOptions = () => {
     const [fadeAnim] = React.useState(new Animated.Value(0))
+    const navigation = useNavigation<HomeNativeStackNavigationpros>()
 
     const Menus = [
         {
             title: "Feed",
-            image: images.createfeed
+            image: images.createfeed,
+            type:"Feed"
         },
         {
             title: "Photo",
-            image: images.photo
+            image: images.photo,
+            type:"image"
         }, {
             title: "Video",
-            image: images.video
+            image: images.video,
+            type:"video"
         }
     ]
     useEffect(() => {
@@ -58,12 +68,12 @@ const CreateOptions = () => {
 
             }}
         >
-            <BlurView
+            {/* <BlurView
                 style={styles.absolute}
                 blurType="dark"
                 blurAmount={10}
                 reducedTransparencyFallbackColor="black"
-            />
+            /> */}
             <Animated.View
                 style={[styles.container, {
                     opacity: fadeAnim
@@ -81,7 +91,10 @@ const CreateOptions = () => {
                                 style={styles.optionrow}
                                 key={`menu-${index}`}
                                 onPress={() => {
-                                    onPressOptions(index)
+                                    navigation.navigate("Create",{
+                                        type:item.type
+                                    })
+
                                 }}
                             >
                                 <LinearGradient

@@ -27,7 +27,7 @@ const CustomButton = (props:CustomButtonProps) => {
   return (
     <LinearGradient
     colors={props.linerColor?props.linerColor:["#12C2E9","#C471ED","#F64F59","#F64F59"]}
-    style={props.buttonStyle?props.buttonStyle:styles.buttonStyle}
+    style={[styles.buttonStyle,props.buttonStyle]}
     start={{x: 0, y: 0}} end={{x: 1, y: 0}}
     >
         <TouchableOpacity
@@ -42,10 +42,10 @@ const CustomButton = (props:CustomButtonProps) => {
                 color={props.iconColor?props.iconColor:Colors.white}
                 />):(props.image?
                 <Image source={props.image} style={
-                    props.imageStyle?props.imageStyle:styles.imageStyle}
+                    [styles.imageStyle,props.imageStyle]}
                 />
                 :
-                <Text style={props.textStyle?props.textStyle:styles.textStyle}>{props.title}</Text>)
+                <Text style={[styles.textStyle,props.textStyle]}>{props.title}</Text>)
             }
 
         </TouchableOpacity>
@@ -63,6 +63,7 @@ const styles=StyleSheet.create({
         justifyContent:"center",
         alignItems:"center",
         borderRadius:10,
+        overflow:"hidden"
     },
     imageStyle:{
         width:"100%",

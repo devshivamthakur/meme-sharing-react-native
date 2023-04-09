@@ -20,6 +20,9 @@ const MyHeader = ({
                     leftPress()
                 }
             }}
+            style={{
+                backgroundColor:"transparent",
+            }}
             
             >
                 {!hideLeft&&<EvilIcons

@@ -386,8 +386,6 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.normal,
     fontSize: 15,
     fontWeight: "500",
-
-
   },
   btn2: {
     width: "40%",
@@ -398,9 +396,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginTop: "30%"
-
-
-
   },
   cameraicon: {
     width: 40,

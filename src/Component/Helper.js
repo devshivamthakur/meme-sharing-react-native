@@ -12,24 +12,32 @@ export const takePermission = async () => {
                 message: 'App needs access to your camera',
             },
         );
-        return Promise.resolve(granted===PermissionsAndroid.RESULTS.GRANTED)
-       
+        return Promise.resolve(granted === PermissionsAndroid.RESULTS.GRANTED)
+
     } catch (err) {
 
         console.warn(err);
     }
 }
-export const pickImageVideo =  (type) => {
+export const pickImageVideo = (type) => {
 
 
     return new Promise((resolve, reject) => {
-        ImagePicker.openPicker({
+        let param = {
             width: 300,
             height: 400,
-            cropping: true,
             mediaType: type,
-            compressImageQuality: 0.5,
-        }).then(image => {
+        }
+        if (type == 'image') {
+            param = {
+                ...param,
+                cropping: true,
+                compressImageQuality: 0.5
+
+            }
+        }
+
+        ImagePicker.openPicker(param).then(image => {
             resolve(image)
         }).catch(err => {
             reject(err)
@@ -39,13 +47,21 @@ export const pickImageVideo =  (type) => {
 }
 export const takeImageVideo = (type) => {
     return new Promise((resolve, reject) => {
-        ImagePicker.openCamera({
+        let param = {
             width: 300,
             height: 400,
-            cropping: true,
             mediaType: type,
-            compressImageQuality: 0.5,
-        }).then(image => {
+        }
+        if (type == 'image') {
+            param = {
+                ...param,
+                cropping: true,
+                compressImageQuality: 0.5
+
+            }
+        }
+
+        ImagePicker.openCamera(param).then(image => {
             resolve(image)
         }).catch(err => {
             reject(err)

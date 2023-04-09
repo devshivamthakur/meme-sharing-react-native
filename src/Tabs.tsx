@@ -72,7 +72,6 @@ export function MyTabs() {
         headerShown:false
 
       }}
-      initialRouteName="Createoptions"
 
 
 
