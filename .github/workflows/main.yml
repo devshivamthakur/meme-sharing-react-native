@@ -1,0 +1,4 @@
+- name: react-native-build-ios
+  # You may pin to the exact commit or the version.
+  # uses: AustinMcGuinn/react-native-build-ios@0759f8cfa5d457c6b476e04bda50da4670a219dc
+  uses: AustinMcGuinn/react-native-build-ios@v1.0.0
