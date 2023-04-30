@@ -1,40 +1,34 @@
-import {BackHandler, View, Text, SafeAreaView, Image, StyleSheet, TouchableOpacity, TextInput, Alert } from 'react-native'
-import React ,{useEffect} from 'react'
+import { BackHandler, View, Text, SafeAreaView, Image, StyleSheet, TouchableOpacity, TextInput, Alert } from 'react-native'
+import React, { useEffect } from 'react'
 import { Colors, Fonts, images } from '../../Theme'
 import MyHeader from '../../Component/MyHeader'
 import withPreventDoubleClick from '../../Component/withPreventDoubleClick'
 const TouchableOpacityex = withPreventDoubleClick(TouchableOpacity)
-import { EMAIL_REGEX, NAME_REGEX, USERNAME_REGEX } from '../../Utils'
+import { NAME_REGEX, USERNAME_REGEX, saveToAsyncStorage } from '../../Utils'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { pickImageVideo, takeImageVideo, takePermission } from '../../Component/Helper'
 import ChooseInterest from './ChooseInterest'
 import CustomButton from '../../Component/CustomButton'
 import { useFocusEffect } from '@react-navigation/native'
+import { useAppDispatch } from '../../Redux/Hooks'
+import FastImage from 'react-native-fast-image'
+import { updateUserinfothunk, uploadfileThunk } from '../../Redux/Actions/Signupactions'
+import { updateloginstatus, updatemodalloader, updateusertoken } from '../../Redux/Reducers/UserinfoSlice'
+import { showMessage } from 'react-native-flash-message'
+import { ErrorMessage } from '../../Component/ErrorMessage'
+import { IS_LOGIN, USERINFO } from '../../Asynckey'
 const Filluserinfo = (props) => {
+  const dispatch = useAppDispatch()
+
   const [step, setStep] = React.useState(1)
-  const [email, setEmail] = React.useState('')
-  const [emailerror, setEmailerror] = React.useState(null)
   const [name, setName] = React.useState('')
   const [username, setUsername] = React.useState('')
   const [nameError, setNameError] = React.useState(null)
   const [usernameError, setUsernameError] = React.useState(null)
   const [ProfilePicUrl, setProfilePicUrl] = React.useState(null)
   const [selectedInterest, setSelectedInterest] = React.useState({})
-  const validateEmail = (email) => {
-    let error = null
-    if (!email) {
-      error = "Email can't be blank"
-
-    }
-    if (email && !EMAIL_REGEX.test(email)) {
-      console.log("email", email)
-      error = "Email is invalid"
-    }
-    setEmailerror(error)
-    return error == null;
 
 
-  }
   const validate_name = (name) => {
     let error = null
     if (!name) {
@@ -61,49 +55,11 @@ const Filluserinfo = (props) => {
     if (username && !USERNAME_REGEX.test(username)) {
       error = "Username is invalid"
     }
-    console.log("username", username, "error", error)
     setUsernameError(error)
     return error == null;
 
   }
-  const EmailInput = () => {
-    return (
-      <View
-        style={styles.box}
-      >
-        <Text
-          style={[styles.heading, {
-            width: "70%",
-            marginTop: "10%",
-            // alignSelf:"center"
-          }]}
-        >
-          What is your email address?
-        </Text>
-        <TextInput
-          style={styles.input}
-          placeholderTextColor="rgba(255, 255, 255, 0.5)"
-          placeholder="Email address"
-          value={email}
-          onChangeText={(text) => {
-            setEmail(text)
-            validateEmail(text)
-          }}
 
-
-        />
-        {
-          emailerror && <Text
-            style={styles.error}
-          >
-            {emailerror}
-          </Text>
-        }
-
-      </View>
-    )
-
-  }
 
   const PickImage = async () => {
     Alert.alert("Select Image", "Choose from where you want to select image", [
@@ -113,14 +69,12 @@ const Filluserinfo = (props) => {
           takePermission().then((res) => {
             if (res) {
               takeImageVideo("image").then((res) => {
-                console.log("res", res.path)
                 setProfilePicUrl(res.path)
 
               })
             }
 
           }).catch((err) => {
-            console.log("err", err)
           }
           )
         }
@@ -130,14 +84,12 @@ const Filluserinfo = (props) => {
           takePermission().then((res) => {
             if (res) {
               pickImageVideo("image").then((res) => {
-                console.log("res", res.path)
                 setProfilePicUrl(res.path)
 
               })
             }
 
           }).catch((err) => {
-            console.log("err", err)
           }
           )
         }
@@ -237,7 +189,7 @@ const Filluserinfo = (props) => {
 
           }}
         >
-          <Image
+          <FastImage
             source={ProfilePicUrl ? { uri: ProfilePicUrl } : { uri: "https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png" }}
             style={styles.profileimge}
           />
@@ -265,25 +217,17 @@ const Filluserinfo = (props) => {
 
   }
   const input_type = {
-    1: EmailInput,
-    2: Name_userName,
-    3: ChooseInterest,
-    4: ProfilePic,
+    1: Name_userName,
+    2: ProfilePic,
   }
   const next = () => {
     if (step == 1) {
-      if (!validateEmail(email)) {
-        return
-      }
-    }
-    if (step == 2) {
       let flag = true
       if (!validate_name(name)) {
         flag = false
 
       }
       if (!validate_username(username)) {
-        console.log("name", name, "username", username, "flag", flag, !validate_username(username))
         flag = false
       }
       if (!flag) {
@@ -292,37 +236,94 @@ const Filluserinfo = (props) => {
 
 
     }
-    if (step == 3 && Object.keys(selectedInterest).length < 3) {
-      alert("Please select at least 3 interest")
-      return
-    }
-    if (step == 4) {
+
+    if (step == 2) {
       if (!ProfilePicUrl) {
         return
       }
 
     }
-    if(step!=4){
+    if (step != 2) {
 
       setStep(step + 1)
-    }else{
+    } else {
+      SaveintoDb()
       //save into api
-      
+      // dispatch(updateloginstatus(true))
+      // saveToAsyncStorage(IS_LOGIN, "true")
+      // // props.navigation.replace("SocialTab")
+
     }
 
 
+
   }
-  const getSelected = (selectedInterest) => {
-    setSelectedInterest(selectedInterest)
+  const SaveintoDb = () => {
+
+    let formdata = new FormData();
+    formdata.append("file", {
+      name: "filename.png",
+      type: "image/png",
+      uri: ProfilePicUrl
+
+
+    })
+    formdata.append("media_type", "image")
+    dispatch(updatemodalloader(true))
+    dispatch(uploadfileThunk(formdata)).unwrap().then((response) => {
+      let profileinfo = { ...props.route.params.userinfo }
+      profileinfo['username'] = username
+      profileinfo['profileurl'] = response.name
+      profileinfo['name'] = name
+      profileinfo['token'] = props.route.params.token
+      profileinfo['device_id'] = "XYZ"
+
+      dispatch(updateUserinfothunk(profileinfo))
+        .unwrap().then((res) => {
+          dispatch(updatemodalloader(false))
+          dispatch(updateloginstatus(true))
+          showMessage({
+            message: "Profile updated successfully",
+            type: "success",
+            icon: "success",
+            duration: 3000
+          })
+          const profileinfo={
+            data:res,
+            token:props.route.params.token
+          }
+          saveToAsyncStorage(IS_LOGIN, "true")
+          saveToAsyncStorage(USERINFO, JSON.stringify(profileinfo))
+          dispatch(updateusertoken(props.route.params.token))
+
+          props.navigation.replace("SocialTab")
+
+        }).catch((err) => {
+          // ErrorMessage(err.message)
+          if (err?.status == 409) {
+            setStep(1)
+          }
+
+          dispatch(updatemodalloader(false))
+
+        })
+
+
+    }).catch((err) => {
+      ErrorMessage(err.response)
+      dispatch(updatemodalloader(false))
+    })
   }
-  const onBack=()=>{
+
+  const onBack = () => {
     setStep(step - 1)
   }
   useFocusEffect(
     React.useCallback(() => {
+      dispatch(updatemodalloader(false))
       const onBackPress = () => {
-        if (step==1) {
-          
+        if (step == 1) {
+
           return true;
         } else {
           onBack()
@@ -335,25 +336,22 @@ const Filluserinfo = (props) => {
       return () => subscription.remove();
     }, [step])
   );
-  
+
   return (
     <SafeAreaView
       style={styles.container}>
       <MyHeader
-        title={`Step ${step}/4`}
-        hideLeft={step==1}
+        title={`Step ${step}/3`}
+        hideLeft={step == 1}
         leftPress={onBack}
       />
 
       {
-        step != 3 ? input_type[step]() : <ChooseInterest
-          getSelected={getSelected}
-          heading={styles.heading}
-        />
+        input_type[step]()
       }
 
       {
-        step != 4 && <CustomButton
+        step != 2 ? <CustomButton
           iconname='arrowright'
           iconfamily="AntDesign"
           iconcolor={Colors.white}
@@ -361,19 +359,15 @@ const Filluserinfo = (props) => {
           iconSize={30}
           buttonStyle={styles.btn}
 
-        />
-      }
+        /> : <CustomButton
 
-{
-        step == 4 && <CustomButton
-         
           onPress={next}
           buttonStyle={styles.btn2}
           title="Submit"
           textStyle={styles.btntxt}
         />
       }
-      
+
     </SafeAreaView>
   )
 }

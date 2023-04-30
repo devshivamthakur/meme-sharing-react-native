@@ -3,9 +3,11 @@ import React from 'react'
 import Router from './src/Router'
 import { Colors } from './src/Theme'
 import { Provider } from 'react-redux';
-import configureStore from './configureStore';
-const store = configureStore();
+import { store } from './Store';
+import FlashMessage from "react-native-flash-message";
+
 const App = () => {
+  
   return (
     <View
       style={{
@@ -14,8 +16,10 @@ const App = () => {
       }}
     >
       <Provider store={store}>
+
         <Router />
       </Provider>
+      <FlashMessage position="top" />
     </View>
   )
 }

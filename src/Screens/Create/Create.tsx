@@ -25,7 +25,6 @@ const Create = ({ navigation, route }: Props) => {
   const [postDesc, setPostDesc] = useState("")
   const [createPostImgArray, setcreatePostImgArray] = useState<imagerray[]>([])
   let type = route.params.type
-  console.log(type)
   const PickImage = async () => {
     Alert.alert("Select " + type, "Choose from where you want to select image", [
       {
@@ -40,7 +39,6 @@ const Create = ({ navigation, route }: Props) => {
             }
 
           }).catch((err) => {
-            console.log("err", err)
           }
           )
         }
@@ -56,7 +54,6 @@ const Create = ({ navigation, route }: Props) => {
             }
 
           }).catch((err) => {
-            console.log("err", err)
           }
           )
         }
@@ -70,7 +67,6 @@ const Create = ({ navigation, route }: Props) => {
       type: type,
       uri: response.path
     })
-    console.log(copy)
     setcreatePostImgArray(copy)
 
 

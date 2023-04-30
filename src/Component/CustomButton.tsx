@@ -19,14 +19,18 @@ interface CustomButtonProps{
     textStyle?:object,
     buttonStyle?:object,
     linerColor?:[],
-    imageStyle?:object
+    imageStyle?:object,
+    disableLinear?:false|boolean
 
 }
 const CustomButton = (props:CustomButtonProps) => {
+    let COLORS_=["transparent","transparent"]
 
   return (
     <LinearGradient
-    colors={props.linerColor?props.linerColor:["#12C2E9","#C471ED","#F64F59","#F64F59"]}
+    colors={
+        props.disableLinear?COLORS_: props.linerColor?props.linerColor:["#12C2E9","#C471ED","#F64F59","#F64F59"]
+    }
     style={[styles.buttonStyle,props.buttonStyle]}
     start={{x: 0, y: 0}} end={{x: 1, y: 0}}
     >

@@ -1,33 +1,27 @@
 import { StyleSheet, View, TouchableOpacity, Text } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import LinearGradient from 'react-native-linear-gradient'
 import { Colors, Fonts } from '../../Theme'
+import { useAppDispatch, useAppSelector } from '../../Redux/Hooks'
+import { GetInterestThunk } from '../../Redux/Actions/Signupactions'
 type selectedIndexprops = { [key: string]: any }
 interface Props {
-    getSelected: (selectedInterest:object) => void;
-    heading:object
-    }
-const ChooseInterest = (props:Props) => {
-    const Interest = [
-        {
-            name: "Games"
-        },
-        {
-            name: "Cricket"
-        }, {
-            name: "Music"
-        }, {
-            name: "Actions"
-        }
-    ]
+    getSelected: (selectedInterest: object) => void;
+    heading: object
+}
+const ChooseInterest = (props: Props) => {
+    const dispatch = useAppDispatch()
+    const InterestList = useAppSelector(state => state.userinfo.InterestList)
+
     const [selectedIndex, setSelectedIndex] = useState<selectedIndexprops>({})
 
     const RenderInterestButton = (item: any, index: number) => {
         return (
             <LinearGradient
                 colors={["#12C2E9", "#C471ED", "#F64F59", "#F64F59"]}
-                start={{x: 0, y: 1}} end={{x: 1, y: 0}}
-                style={[styles.linerstyle, selectedIndex[index]!=undefined ? {
+                start={{ x: 0, y: 1 }} end={{ x: 1, y: 0 }}
+                style={[styles.linerstyle, selectedIndex[index] != undefined ? {
+                    padding: 1
 
                 } : {
 
@@ -38,7 +32,7 @@ const ChooseInterest = (props:Props) => {
             >
                 <TouchableOpacity
                     key={`Interestbuttons ${index}`}
-                    style={[styles.btn, selectedIndex[index]!=undefined ? {
+                    style={[styles.btn, selectedIndex[index] != undefined ? {
 
                     } : {
                         backgroundColor: "#212121"
@@ -46,18 +40,18 @@ const ChooseInterest = (props:Props) => {
                     }
                     ]}
                     onPress={() => {
-                        let copydata={ ...selectedIndex }
-                        if (selectedIndex[index]!=undefined) {
+                        let copydata = { ...selectedIndex }
+                        if (selectedIndex[index] != undefined) {
                             // setSelectedIndex({...selectedIndex, [index]: false})
-                           
+
                             delete copydata[index]
                             setSelectedIndex(copydata)
                         } else {
-                            copydata={ ...selectedIndex, [index]: item.name }
+                            copydata = { ...selectedIndex, [index]: item.name }
                             setSelectedIndex(copydata)
                         }
                         props.getSelected(copydata)
-                        
+
                     }}
                 >
                     <Text
@@ -69,28 +63,32 @@ const ChooseInterest = (props:Props) => {
             </LinearGradient>
         )
     }
+    useEffect(() => {
+        dispatch(GetInterestThunk())
 
+
+    }, [])
     return (
         <>
-        <Text
-          style={[props.heading, {
-            width: "70%",
-            marginTop: "10%",
-            marginLeft:"4%"
-          }]}
-        >
-          Select your interest
-        </Text>
-        <View
-            style={styles.row}
-        >
-            {
-                Interest.map((item: any, index: number) => {
-                    return RenderInterestButton(item, index)
-                })
-            }
+            <Text
+                style={[props.heading, {
+                    width: "70%",
+                    marginTop: "10%",
+                    marginLeft: "4%"
+                }]}
+            >
+                Select your interest
+            </Text>
+            <View
+                style={styles.row}
+            >
+                {
+                    InterestList.map((item: any, index: number) => {
+                        return RenderInterestButton(item, index)
+                    })
+                }
 
-        </View>
+            </View>
         </>
     )
 }
@@ -104,10 +102,10 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         marginTop: "10%",
-        height:"50%",
+        height: "50%",
 
-        width:"90%",
-        alignSelf:"center",
+        width: "90%",
+        alignSelf: "center",
 
 
     },

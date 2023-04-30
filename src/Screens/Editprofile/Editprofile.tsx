@@ -1,24 +1,34 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity, Image, Alert, ScrollView } from 'react-native';
+import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import FastImage from 'react-native-fast-image';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { normalize } from '../../../Normalize';
+import { IMAGEURL } from '../../Apiendpoints';
+import CustomButton from '../../Component/CustomButton';
+import { pickImageVideo, takeImageVideo, takePermission } from '../../Component/Helper';
 import LinerGradiantView from '../../Component/LinerGradiantView';
 import MyHeader from '../../Component/MyHeader';
-import { normalize } from '../../../Normalize';
-import { Colors, Fonts, images } from '../../Theme';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import { pickImageVideo, takeImageVideo, takePermission } from '../../Component/Helper';
-import CustomButton from '../../Component/CustomButton';
-import { EMAIL_REGEX, NAME_REGEX, USERNAME_REGEX } from '../../Utils';
-import UserNavigationProp from "../../Component/UserNavigationProp"
+import UserNavigationProp from "../../Component/UserNavigationProp";
+import { useAppDispatch, useAppSelector } from '../../Redux/Hooks';
+import { Colors, Fonts } from '../../Theme';
+import {  NAME_REGEX, USERNAME_REGEX, saveToAsyncStorage } from '../../Utils';
+import { ErrorMessage } from '../../Component/ErrorMessage';
+import { updatemodalloader } from '../../Redux/Reducers/UserinfoSlice';
+import { updateUserinfothunk, uploadfileThunk } from '../../Redux/Actions/Signupactions';
+import { showMessage } from 'react-native-flash-message';
+import { USERINFO } from '../../Asynckey';
 interface EditProfileprops {
     navigation: UserNavigationProp<"Settings">
 }
 
 export const EditProfile = (props: EditProfileprops) => {
-    const [updatedEmail, setUpdatedEmail] = useState("");
-    const [updatedUsername, setUpdatedUsername] = useState("");
-    const [updatedFullName, setUpdatedFullName] = useState("");
-    const [ProfilePicUrl, setProfilePicUrl] = useState(null);
-    const [emailerror, setEmailerror] = useState('');
+    const Userinfo = useAppSelector(state => state.userinfo.userinfo)
+    const UserToken = useAppSelector(state => state.userinfo.userToken)
+    const dispatch = useAppDispatch()
+    const [updatedEmail] = useState(Userinfo.email);
+    const [updatedUsername, setUpdatedUsername] = useState(Userinfo.username);
+    const [updatedFullName, setUpdatedFullName] = useState(Userinfo.name);
+    const [ProfilePicUrl, setProfilePicUrl] = useState(IMAGEURL + Userinfo.profileurl);
     const [nameerror, setNameError] = useState('');
     const [usernameerror, setUsernameError] = useState('');
 
@@ -30,14 +40,12 @@ export const EditProfile = (props: EditProfileprops) => {
                     takePermission().then((res) => {
                         if (res) {
                             takeImageVideo("image").then((res) => {
-                                console.log("res", res.path)
                                 setProfilePicUrl(res.path)
 
                             })
                         }
 
                     }).catch((err) => {
-                        console.log("err", err)
                     }
                     )
                 }
@@ -47,14 +55,12 @@ export const EditProfile = (props: EditProfileprops) => {
                     takePermission().then((res) => {
                         if (res) {
                             pickImageVideo("image").then((res) => {
-                                console.log("res", res.path)
                                 setProfilePicUrl(res.path)
 
                             })
                         }
 
                     }).catch((err) => {
-                        console.log("err", err)
                     }
                     )
                 }
@@ -62,21 +68,7 @@ export const EditProfile = (props: EditProfileprops) => {
         ])
 
     }
-    const validateEmail = (email: string) => {
-        let error = ''
-        if (!email) {
-            error = "Email can't be blank"
-
-        }
-        if (email && !EMAIL_REGEX.test(email)) {
-            console.log("email", email)
-            error = "Email is invalid"
-        }
-        setEmailerror(error)
-        return error == null;
-
-
-    }
+  
     const validate_name = (name: string) => {
         let error = ''
         if (!name) {
@@ -89,7 +81,7 @@ export const EditProfile = (props: EditProfileprops) => {
             error = "Name is invalid"
         }
         setNameError(error)
-        return error == null;
+        return error == '';
     }
 
     const validate_username = (username: string) => {
@@ -103,9 +95,8 @@ export const EditProfile = (props: EditProfileprops) => {
         if (username && !USERNAME_REGEX.test(username)) {
             error = "Username is invalid"
         }
-        console.log("username", username, "error", error)
         setUsernameError(error)
-        return error == null;
+        return error == '';
 
     }
     const onPressNext = () => {
@@ -116,15 +107,95 @@ export const EditProfile = (props: EditProfileprops) => {
         if (!validate_username(updatedUsername)) {
             flag = false;
         }
-        if (!validateEmail(updatedEmail)) {
-            flag = false;
-        }
+        
         if (flag) {
+            console.log("onPress",flag)
+            SaveintoDb()
 
         }
 
     }
+    const SaveintoDb = () => {
+        if (Userinfo.profileurl != ProfilePicUrl) {
 
+
+            let formdata = new FormData();
+            formdata.append("file", {
+                name: "filename.png",
+                type: "image/png",
+                uri: ProfilePicUrl
+
+
+            })
+            formdata.append("media_type", "image")
+            dispatch(updatemodalloader(true))
+            dispatch(uploadfileThunk(formdata)).unwrap().then((response) => {
+                let profileinfo = { ...Userinfo }
+                profileinfo['username'] = updatedUsername
+                profileinfo['profileurl'] = response.name
+                profileinfo['name'] = updatedFullName
+                profileinfo['token'] = UserToken
+
+                dispatch(updateUserinfothunk(profileinfo))
+                    .unwrap().then((res) => {
+                        dispatch(updatemodalloader(false))
+                        showMessage({
+                            message: "Profile updated successfully",
+                            type: "success",
+                            icon: "success",
+                            duration: 3000
+                        })
+                        const profileinfo = {
+                            data: res,
+                            token: UserToken
+                        }
+                        saveToAsyncStorage(USERINFO, JSON.stringify(profileinfo))
+
+                        props.navigation.goBack()
+
+                    }).catch((err: any) => {
+
+                        dispatch(updatemodalloader(false))
+
+                    })
+
+
+            }).catch((err: any) => {
+                ErrorMessage(err.response)
+                dispatch(updatemodalloader(false))
+            })
+        } else {
+            dispatch(updatemodalloader(false))
+            let profileinfo = { ...Userinfo }
+            profileinfo['username'] = updatedUsername
+            profileinfo['name'] = updatedFullName
+            profileinfo['token'] = UserToken
+
+            dispatch(updateUserinfothunk(profileinfo))
+                .unwrap().then((res) => {
+                    dispatch(updatemodalloader(false))
+                    showMessage({
+                        message: "Profile updated successfully",
+                        type: "success",
+                        icon: "success",
+                        duration: 3000
+                    })
+                    const profileinfo = {
+                        data: res,
+                        token: UserToken
+                    }
+                    saveToAsyncStorage(USERINFO, JSON.stringify(profileinfo))
+
+                    props.navigation.goBack()
+
+                }).catch((err: any) => {
+
+
+                    dispatch(updatemodalloader(false))
+
+                })
+        }
+    }
 
     return (
         <LinerGradiantView style={styles.container}>
@@ -148,7 +219,7 @@ export const EditProfile = (props: EditProfileprops) => {
                 <ScrollView>
 
                     <View style={styles.profilePhotoContainer}>
-                        <Image
+                        <FastImage
                             source={ProfilePicUrl ? { uri: ProfilePicUrl } : { uri: "https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png" }}
                             style={styles.profilePhoto} />
 
@@ -171,20 +242,12 @@ export const EditProfile = (props: EditProfileprops) => {
                         <Text style={styles.label}>Email</Text>
                         <TextInput
                             value={updatedEmail}
-                            onChangeText={(text: string) => {
-                                validateEmail(text)
-                                setUpdatedEmail(text)
-                            }}
+
                             style={styles.input}
                             placeholder="Email"
+                            editable={false}
                         />
-                        {
-                            emailerror != '' && <Text
-                                style={styles.errortxt}
-                            >
-                                {emailerror}
-                            </Text>
-                        }
+                      
                     </View>
                     <View style={styles.inputContainer}>
                         <Text style={styles.label}>Username</Text>

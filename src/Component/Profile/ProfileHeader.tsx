@@ -7,13 +7,21 @@ import VectorIcon from '../VectorIcons';
 import { normalize } from '../../../Normalize';
 const { width, height } = Dimensions.get("window")
 const TouchableOpacityex = withPreventDoubleClick(TouchableOpacity);
-const ProfileHeader = () => {
+interface Props{
+  onPressBackButton?:()=>void;
+}
+const ProfileHeader = (props:Props) => {
   return (
     <View
       style={styles.container}
     >
       <TouchableOpacityex
         style={styles.backview}
+        onPress={()=>{
+          if(props.onPressBackButton){
+            props.onPressBackButton()
+          }
+        }}
       >
         <Image
           source={images.back}

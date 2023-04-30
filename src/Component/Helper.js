@@ -3,7 +3,6 @@ import { PermissionsAndroid } from 'react-native';
 
 export const takePermission = async () => {
     try {
-        console.log("in take permission")
         const granted = await PermissionsAndroid.request(
             PermissionsAndroid.PERMISSIONS.CAMERA,
 

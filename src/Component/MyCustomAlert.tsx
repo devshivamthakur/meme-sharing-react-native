@@ -167,28 +167,29 @@ export const MyCustomAlert = (props: MyCustomAlertprops) => {
                   </TouchableOpacity>
                 </LinearGradient>
               ) : (
-                <TouchableOpacity
-                  style={[
-                    styles.noButton,
-                    {
-                      width: props.from != "BlockUser" ? 130 : 90,
-                    },
-                  ]}
-                  onPress={() => {
-                    onButtonPress("yes");
-                  }}
-                >
-                  <Text style={styles.noButtonText}>{props.buttonText}</Text>
-                </TouchableOpacity>
+                <CustomButton
+                title={props.buttonText}
+                buttonStyle={[
+                  styles.closeButton,
+                  {
+                    width: props.from != "BlockUser" ? 130 : 100,
+                  },
+                ]}
+                onPress={() => {
+                  onButtonPress("yes");
+                }}
+                />
               )}
 
               {props.noVisible && (
                 <CustomButton
+                disableLinear={true}
                   title={props.noBtnText}
                   buttonStyle={[
                     styles.closeButton,
                     {
                       width: props.from != "BlockUser" ? 130 : 100,
+                      borderWidth:1
                     },
                   ]}
                   onPress={() => {

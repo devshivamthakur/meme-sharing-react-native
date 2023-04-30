@@ -50,7 +50,6 @@ const Home = () => {
         <TouchableOpacityex
           style={[styles.roundView]}
           onPress={() => {
-            console.log("Press")
 
             navigation.navigate("Settings")
           }}

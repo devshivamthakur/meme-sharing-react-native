@@ -8,6 +8,11 @@ import SettingsMenu from '../../Component/Settings/SettingsMenu'
 import UserNavigationProp from "../../Component/UserNavigationProp"
 import { MyCustomAlert } from '../../Component/MyCustomAlert'
 import { APPNAME } from '../../Contants'
+import { deleteAsyncStorage } from '../../Utils'
+import { IS_LOGIN, USERINFO } from '../../Asynckey'
+import { useAppSelector } from '../../Redux/Hooks'
+import { IMAGEURL } from '../../Apiendpoints'
+import FastImage from 'react-native-fast-image'
 interface Settingsprops{
   navigation:UserNavigationProp<"Settings">
 }
@@ -19,8 +24,8 @@ const Settings = (props:Settingsprops) => {
   const [buttonText, setButtonText] = useState("");
   const [noVisible, setNoVisible] = useState(false);
   const [noBtnText, setNoBtnText] = useState("");
-  const [showdot,setshowBadge]=useState(false)
   const [isFrom, setIsFrom] = useState("");
+  const userinfo=useAppSelector(state=>state.userinfo.userinfo)
   const renderProfileInfoView = () => {
     return (
       <View
@@ -29,10 +34,10 @@ const Settings = (props:Settingsprops) => {
 
         }]}
       >
-        <Image
+        <FastImage
           style={styles.profileimg}
-          source={{ uri: images.dummyImage }}
-        ></Image>
+          source={{ uri: IMAGEURL+userinfo.profileurl }}
+        />
 
         <View
           style={styles.profileinfo}
@@ -41,13 +46,13 @@ const Settings = (props:Settingsprops) => {
             numberOfLines={1}
             style={styles.name}
           >
-            {"shivam kumar thakur"}
+            {userinfo.name}
           </Text>
 
           <Text
             style={styles.emailsstyle}
           >
-            {"shivamthakurcool01@gmail.com"}
+            {userinfo.email}
           </Text>
         </View>
       </View>
@@ -56,7 +61,10 @@ const Settings = (props:Settingsprops) => {
   const onAlertClick=(param:string)=>{
     setIsVisible(false)
     if(isFrom=="logout"&&param=="yes"){
-      console.log("logout")
+      deleteAsyncStorage(IS_LOGIN)
+      deleteAsyncStorage(USERINFO)
+      
+      props.navigation.replace("Auth")
     }
   }
 

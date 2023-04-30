@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native'
 import React, { useMemo } from 'react'
 import FastImage from 'react-native-fast-image'
-import withPreventDoubleClick from '../../Component/withPreventDoubleClick'
+import withPreventDoubleClick from './withPreventDoubleClick'
 const { width, height } = Dimensions.get("window")
 type RenderPostProps = {
     item: any,

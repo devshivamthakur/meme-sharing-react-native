@@ -1,0 +1,43 @@
+{
+  "project_info": {
+    "project_number": "29910542249",
+    "project_id": "memesharing-1af3f",
+    "storage_bucket": "memesharing-1af3f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:29910542249:android:d62a72eb2d22e9030a46b8",
+        "android_client_info": {
+          "package_name": "com.memesharin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "29910542249-8vdvsocmr8r1bqn40eb6nmn9o9usttgm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.memesharin",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_4iczu7itysrd7-8jGQmIgZyfU9SvLqo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "29910542249-4ht7j6d7c64jp1p6cbe5r80m3252jg2v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
