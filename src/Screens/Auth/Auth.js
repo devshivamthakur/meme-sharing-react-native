@@ -9,7 +9,7 @@ import {
   statusCodes,
 } from "@react-native-google-signin/google-signin";
 import { showMessage } from 'react-native-flash-message'
-import { getAsyncStorage, saveToAsyncStorage } from '../../Utils'
+import {  saveToAsyncStorage } from '../../Utils'
 import { IS_LOGIN, USERINFO } from '../../Asynckey'
 import axios from 'axios'
 import { LOGINAPI } from '../../Apiendpoints'

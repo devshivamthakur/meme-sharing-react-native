@@ -13,6 +13,9 @@ import { IS_LOGIN, USERINFO } from '../../Asynckey'
 import { useAppSelector } from '../../Redux/Hooks'
 import { IMAGEURL } from '../../Apiendpoints'
 import FastImage from 'react-native-fast-image'
+import {
+  GoogleSignin,
+} from "@react-native-google-signin/google-signin";
 interface Settingsprops{
   navigation:UserNavigationProp<"Settings">
 }
@@ -61,6 +64,17 @@ const Settings = (props:Settingsprops) => {
   const onAlertClick=(param:string)=>{
     setIsVisible(false)
     if(isFrom=="logout"&&param=="yes"){
+      try {
+        GoogleSignin.isSignedIn().then((value)=>{
+          if(value){
+
+            GoogleSignin.signOut()
+          }
+        })
+        
+      } catch (error) {
+        
+      }
       deleteAsyncStorage(IS_LOGIN)
       deleteAsyncStorage(USERINFO)
       
