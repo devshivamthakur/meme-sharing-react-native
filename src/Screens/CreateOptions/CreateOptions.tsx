@@ -1,7 +1,6 @@
 import { View, Text, StyleSheet, TouchableOpacity, Animated } from 'react-native'
 import React, { useEffect } from 'react'
 import LinerGradiantView from '../../Component/LinerGradiantView'
-import { BlurView } from '@react-native-community/blur'
 import { Colors, Fonts, images } from '../../Theme'
 import withPreventDoubleClick from '../../Component/withPreventDoubleClick'
 import FastImage from 'react-native-fast-image'
@@ -10,33 +9,33 @@ import LinearGradient from 'react-native-linear-gradient'
 import { AppStackParamList } from '../../Router'
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-type HomeNativeStackNavigationpros = NativeStackNavigationProp<AppStackParamList,"SocialTab">
+
+type HomeNativeStackNavigationpros = NativeStackNavigationProp<AppStackParamList, "SocialTab">
 
 const TouchableOpacityex = withPreventDoubleClick(TouchableOpacity)
 type menuType = {
     title: string,
     image: any,
-    type:string
+    type: string
 
 }
 const CreateOptions = () => {
     const [fadeAnim] = React.useState(new Animated.Value(0))
     const navigation = useNavigation<HomeNativeStackNavigationpros>()
-
     const Menus = [
         {
             title: "Feed",
             image: images.createfeed,
-            type:"Feed"
+            type: "Feed"
         },
         {
             title: "Photo",
             image: images.photo,
-            type:"image"
+            type: "image"
         }, {
             title: "Video",
             image: images.video,
-            type:"video"
+            type: "video"
         }
     ]
     useEffect(() => {
@@ -49,31 +48,15 @@ const CreateOptions = () => {
         }).start()
 
     }, [])
-    const onPressOptions = (index: number) => {
-        switch (index) {
-            case 1://feed
-                break;
-            case 2://photos
-                break;
-            case 3://videos
-                break
 
-        }
-    }
 
     return (
         <LinerGradiantView
             style={{
-                justifyContent: "flex-end",
+                justifyContent: "center",
 
             }}
         >
-            {/* <BlurView
-                style={styles.absolute}
-                blurType="dark"
-                blurAmount={10}
-                reducedTransparencyFallbackColor="black"
-            /> */}
             <Animated.View
                 style={[styles.container, {
                     opacity: fadeAnim
@@ -88,11 +71,14 @@ const CreateOptions = () => {
                     Menus.map((item: menuType, index: number) => {
                         return (
                             <TouchableOpacityex
-                                style={styles.optionrow}
+                                style={[styles.optionrow,{
+                                    borderBottomWidth: index!=2?0.5:0,
+
+                                }]}
                                 key={`menu-${index}`}
                                 onPress={() => {
-                                    navigation.navigate("Create",{
-                                        type:item.type
+                                    navigation.navigate("Create", {
+                                        type: item.type
                                     })
 
                                 }}
@@ -144,11 +130,12 @@ const styles = StyleSheet.create({
 
     },
     heading: {
-        fontSize: normalize(15),
+        fontSize: normalize(25),
         color: Colors.black,
         fontWeight: "600",
         fontFamily: Fonts.semiBold,
         margin: 10,
+        marginLeft:"5%"
 
 
     },
@@ -169,16 +156,18 @@ const styles = StyleSheet.create({
 
     },
     img: {
-        height: 20,
-        width: 20,
+        height: 45,
+        width: 45,
         resizeMode: "contain"
 
     },
     container: {
         backgroundColor: "#fff",
-        borderTopRightRadius: 12,
-        borderTopLeftRadius: 12,
-        paddingTop: 15
+        borderRadius: 12,
+        paddingTop: 15,
+        width: "95%",
+        alignSelf: "center",
+        paddingBottom:10
 
     },
     absolute: {
@@ -193,8 +182,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         padding: 10,
         borderBottomColor: "#212121",
-        borderBottomWidth: 0.5,
-        paddingLeft: 13
+        paddingLeft: 25
 
     }
 })

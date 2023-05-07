@@ -26,7 +26,7 @@ export type AppStackParamList = {
   Editprofile:undefined,
   BlockedAccounts:undefined,
   Create: {
-    type: string
+    type: string;
   },
   StaticManagement:{
     type:string
@@ -69,10 +69,13 @@ const isLogin=useAppSelector(state=>state.userinfo.islogin)
         <Stack.Screen name="MyTest" component={MyTest}/>
 
 
-        {
+        {/* {
           isLogin&&AuthScreen()
-        }
+        } */}
 
+{
+  AuthScreen()
+}
 
 
 

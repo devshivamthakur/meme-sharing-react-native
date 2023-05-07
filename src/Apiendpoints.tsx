@@ -6,3 +6,7 @@ export const UPDATEPROFILE=BASE_URL+"adduserinfo"
 export const GETUSERINFO=BASE_URL+"userinfo"
 
 export const IMAGEURL="https://ik.imagekit.io/rwjbkkgdf"
+
+//////////////////////// post info //////////////////
+
+export const CREATEPOSTAPI=BASE_URL+"createpost"

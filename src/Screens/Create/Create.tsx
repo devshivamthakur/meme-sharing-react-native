@@ -10,6 +10,14 @@ import { pickImageVideo, takeImageVideo, takePermission } from '../../Component/
 import UserNavigationProp from "../../Component/UserNavigationProp"
 import { RouteProp } from '@react-navigation/native';
 import { AppStackParamList } from '../../Router'
+import { useAppDispatch, useAppSelector } from '../../Redux/Hooks'
+import { CreatePost_thunk } from '../../Redux/Actions/Postinfoactions'
+import { updatemodalloader } from '../../Redux/Reducers/UserinfoSlice'
+import FastImage from 'react-native-fast-image'
+import { IMAGEURL } from '../../Apiendpoints'
+import { showMessage } from 'react-native-flash-message'
+import { uploadfileThunk } from '../../Redux/Actions/Signupactions'
+import { ErrorMessage } from '../../Component/ErrorMessage'
 type CreateScreenRouteProp = RouteProp<AppStackParamList, 'Create'>;
 
 type imagerray = {
@@ -17,13 +25,32 @@ type imagerray = {
   uri: string
 }
 
+type imagearray__ = {
+  media_type: string,
+  file: string
+}
+
 type Props = {
   navigation: UserNavigationProp<'Create'>;
   route: CreateScreenRouteProp
 };
+type PostType = "Feed" | "image" | "video" | string;
+
+type PostTypeMapping = {
+  [key in PostType]: string;
+};
+
+type postdatatype = {
+
+}
 const Create = ({ navigation, route }: Props) => {
   const [postDesc, setPostDesc] = useState("")
+  const [postDescerror, setPostDescerror] = useState("")
+  const [mediaerror, setMediaerror] = useState("")
   const [createPostImgArray, setcreatePostImgArray] = useState<imagerray[]>([])
+  const dispatch = useAppDispatch()
+  const userinfo = useAppSelector(state => state.userinfo.userinfo)
+
   let type = route.params.type
   const PickImage = async () => {
     Alert.alert("Select " + type, "Choose from where you want to select image", [
@@ -67,6 +94,7 @@ const Create = ({ navigation, route }: Props) => {
       type: type,
       uri: response.path
     })
+    setMediaerror("")
     setcreatePostImgArray(copy)
 
 
@@ -75,6 +103,128 @@ const Create = ({ navigation, route }: Props) => {
     let copy = [...createPostImgArray]
     copy.splice(index, 1)
     setcreatePostImgArray(copy)
+
+  }
+  const validateFeed = (postDesc: string) => {
+    if (postDesc == "") {
+      setPostDescerror("Post description should not be empty.")
+      return false
+
+    } else if (postDesc.length < 15) {
+      setPostDescerror("Post description length must be at least 15 characters.")
+      return false
+
+    } else {
+      setPostDescerror("")
+      return true
+    }
+
+  }
+
+  const validateMedia = () => {
+    if (createPostImgArray.length == 0) {
+      setMediaerror("Please select at least one media file.")
+      return false
+    }
+    setMediaerror("")
+    return true
+
+  }
+  const uploadimage = () => {
+    let imagearray_: imagearray__[] = []
+
+    dispatch(updatemodalloader(true))
+    createPostImgArray.map((item, index) => {
+      let formdata = new FormData();
+      formdata.append("file", {
+        name: `${new Date().getTime()}.${type == "image" ? "png" : "mp4"}`,
+        type: `${item.type}/${type == "image" ? "png" : "mp4"}`,
+        uri: item.uri
+      })
+      formdata.append("media_type", type)
+      dispatch(uploadfileThunk(formdata)).unwrap().then((response) => {
+
+        imagearray_.push({
+          "media_type": type,
+          file: response.name
+        })
+        if (createPostImgArray.length == imagearray_.length) {
+          dispatch(updatemodalloader(false))
+
+          createPost(imagearray_)
+        }
+
+      }).catch((err) => {
+        ErrorMessage(err.response)
+        dispatch(updatemodalloader(false))
+
+
+      })
+
+
+
+
+    })
+
+  }
+  const validate = () => {
+    if (type == "Feed") {
+      if (!validateFeed(postDesc)) {
+        return;
+      } else {
+        createPost([])
+      }
+    } else {
+      if (!validateMedia()) {
+        return;
+      } else {
+
+        uploadimage()
+
+      }
+
+    }
+
+  }
+
+  const createPost = (imagearray_: imagearray__[]) => {
+    let posttype: PostTypeMapping = {
+      "Feed": "text",
+      "image": "image",
+      "video": "video"
+    }
+    let data: postdatatype = {
+      post_type: posttype[type]
+    }
+    if (type == "Feed") {
+      data = {
+        ...data,
+        description: postDesc
+      }
+    } else {
+      data = {
+        ...data,
+        media: imagearray_
+      }
+
+    }
+    dispatch(updatemodalloader(true))
+    dispatch(CreatePost_thunk(data)).unwrap().then((response) => {
+      dispatch(updatemodalloader(false))
+      showMessage({
+        message: "Post created successfully.",
+        type: "success",
+        icon: "success",
+        duration: 3000
+      })
+      navigation.replace("SocialTab")
+
+    }).catch((error) => {
+      dispatch(updatemodalloader(false))
+
+
+    })
+
 
   }
   return (
@@ -94,14 +244,14 @@ const Create = ({ navigation, route }: Props) => {
         style={styles.row}
       >
         <View style={styles.profileImg}>
-          <Image
+          <FastImage
             resizeMode={"cover"}
             style={{
               width: 45,
               height: 45,
               borderRadius: 45 / 2
             }}
-            source={{ uri: images.dummyImage }}
+            source={{ uri: IMAGEURL + userinfo.profileurl }}
           />
         </View>
         <View style={{ width: "80%", paddingHorizontal: "3%" }}>
@@ -113,11 +263,19 @@ const Create = ({ navigation, route }: Props) => {
             placeholder="Write a caption. . ."
             onChangeText={(value) => {
               setPostDesc(value);
+              validateFeed(value)
 
             }}
             style={styles.vwDesc}
 
           />}
+          {
+            postDescerror != "" && <Text
+              style={styles.error}
+            >
+              {postDescerror}
+            </Text>
+          }
         </View>
       </View>
 
@@ -162,9 +320,25 @@ const Create = ({ navigation, route }: Props) => {
 
 
       </View>}
+      {
+            mediaerror != "" && <Text
+              style={
+                [styles.error,{
+                width:"90%",
+                alignSelf:"center",
+                fontSize:14
+              }]}
+            >
+              {mediaerror}
+            </Text>
+          }
       <CustomButton
         title='Upload'
         buttonStyle={styles.btnupload}
+        onPress={() => {
+          validate()
+
+        }}
 
       />
     </LinerGradiantView>
@@ -174,6 +348,13 @@ const Create = ({ navigation, route }: Props) => {
 export default Create
 
 const styles = StyleSheet.create({
+  error: {
+    fontSize: 12,
+    fontFamily: Fonts.normal,
+    marginTop: 4,
+    color: "red"
+
+  },
   addimage: {
 
     borderWidth: 1,

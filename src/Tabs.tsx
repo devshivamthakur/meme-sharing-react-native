@@ -72,6 +72,7 @@ export function MyTabs() {
         headerShown:false
 
       }}
+      initialRouteName='Home'
 
 
 
