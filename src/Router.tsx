@@ -33,7 +33,9 @@ export type AppStackParamList = {
   },
   Deactivateaccount:undefined,
   MyTest:undefined,
-  OtherUserProfile:undefined,
+  OtherUserProfile:{
+    user_id:number
+  },
 };
 const Stack = createNativeStackNavigator<AppStackParamList>();
 const Router = () => {
@@ -69,13 +71,11 @@ const isLogin=useAppSelector(state=>state.userinfo.islogin)
         <Stack.Screen name="MyTest" component={MyTest}/>
 
 
-        {/* {
+        {
           isLogin&&AuthScreen()
-        } */}
+        }
 
-{
-  AuthScreen()
-}
+
 
 
 

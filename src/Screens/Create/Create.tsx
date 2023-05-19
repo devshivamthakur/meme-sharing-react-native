@@ -18,6 +18,8 @@ import { IMAGEURL } from '../../Apiendpoints'
 import { showMessage } from 'react-native-flash-message'
 import { uploadfileThunk } from '../../Redux/Actions/Signupactions'
 import { ErrorMessage } from '../../Component/ErrorMessage'
+import { createThumbnail } from "react-native-create-thumbnail";
+
 type CreateScreenRouteProp = RouteProp<AppStackParamList, 'Create'>;
 
 type imagerray = {
@@ -27,7 +29,8 @@ type imagerray = {
 
 type imagearray__ = {
   media_type: string,
-  file: string
+  file: string,
+  thumbnail_url?: string
 }
 
 type Props = {
@@ -89,6 +92,17 @@ const Create = ({ navigation, route }: Props) => {
 
   }
   const AppendMedia = (response: any) => {
+    if(type =="video") {
+      if(response.duration<3000){
+
+        alert("Minumum video duration is 3 seconds.")
+        return
+      }else if (response.duration>30*1000){
+        alert("Max video duration is 30 seconds.")
+        return
+      }
+
+    }
     let copy = [...createPostImgArray]
     copy.push({
       type: type,
@@ -130,11 +144,42 @@ const Create = ({ navigation, route }: Props) => {
     return true
 
   }
+  const generateThumbnail = async (url: string) => {
+    let thumbnailUrl = await createThumbnail({
+      url: url,
+      timeStamp: 2000,
+    })
+    return Promise.resolve(thumbnailUrl)
+
+  }
   const uploadimage = () => {
     let imagearray_: imagearray__[] = []
 
     dispatch(updatemodalloader(true))
     createPostImgArray.map((item, index) => {
+      let thumbnail_res = ""
+      if (item.type == "video") {
+        generateThumbnail(item.uri).then((thumbnailurl) => {
+
+          let formdata = new FormData();
+          formdata.append("file", {
+            name: `${new Date().getTime()}.png`,
+            type: `image/png`,
+            uri: thumbnailurl.path
+          })
+          formdata.append("media_type", "image")
+          dispatch(uploadfileThunk(formdata)).unwrap().then((response) => {
+            thumbnail_res = response.name
+
+          }).catch((err) => {
+            ErrorMessage(err.response)
+            dispatch(updatemodalloader(false))
+
+
+          })
+        })
+
+      }
       let formdata = new FormData();
       formdata.append("file", {
         name: `${new Date().getTime()}.${type == "image" ? "png" : "mp4"}`,
@@ -143,11 +188,14 @@ const Create = ({ navigation, route }: Props) => {
       })
       formdata.append("media_type", type)
       dispatch(uploadfileThunk(formdata)).unwrap().then((response) => {
-
-        imagearray_.push({
+        let imageArraydata:imagearray__ = {
           "media_type": type,
           file: response.name
-        })
+        }
+          imageArraydata["thumbnail_url"] = thumbnail_res
+
+        
+        imagearray_.push(imageArraydata)
         if (createPostImgArray.length == imagearray_.length) {
           dispatch(updatemodalloader(false))
 
@@ -321,17 +369,17 @@ const Create = ({ navigation, route }: Props) => {
 
       </View>}
       {
-            mediaerror != "" && <Text
-              style={
-                [styles.error,{
-                width:"90%",
-                alignSelf:"center",
-                fontSize:14
-              }]}
-            >
-              {mediaerror}
-            </Text>
-          }
+        mediaerror != "" && <Text
+          style={
+            [styles.error, {
+              width: "90%",
+              alignSelf: "center",
+              fontSize: 14
+            }]}
+        >
+          {mediaerror}
+        </Text>
+      }
       <CustomButton
         title='Upload'
         buttonStyle={styles.btnupload}

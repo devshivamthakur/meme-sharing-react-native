@@ -9,13 +9,15 @@ import {
   statusCodes,
 } from "@react-native-google-signin/google-signin";
 import { showMessage } from 'react-native-flash-message'
-import {  saveToAsyncStorage } from '../../Utils'
+import { saveToAsyncStorage } from '../../Utils'
 import { IS_LOGIN, USERINFO } from '../../Asynckey'
 import axios from 'axios'
 import { LOGINAPI } from '../../Apiendpoints'
 import { ErrorMessage } from '../../Component/ErrorMessage'
 import { useAppDispatch } from '../../Redux/Hooks'
 import { updateUserinfo, updateloginstatus, updateusertoken } from '../../Redux/Reducers/UserinfoSlice'
+import messaging from '@react-native-firebase/messaging';
+
 const Auth = (props) => {
   const [fadeAnim] = React.useState(new Animated.Value(0))
   const [loading, setLoading] = useState(false)
@@ -45,7 +47,9 @@ const Auth = (props) => {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
       setLoading(false);
-      LoginApi(userInfo)
+      await messaging().registerDeviceForRemoteMessages();
+      const token = await messaging().getToken();
+      LoginApi(userInfo, token)
 
       // props.navigation.navigate("Filluserinfo")
 
@@ -86,7 +90,7 @@ const Auth = (props) => {
     }
   };
 
-  const LoginApi = (googlesignininfo) => {
+  const LoginApi = (googlesignininfo, token) => {
     setLoading(true)
 
     axios(
@@ -95,7 +99,8 @@ const Auth = (props) => {
         method: "post",
         data: {
           email: googlesignininfo.user.email,
-          google_id: googlesignininfo.user.id
+          google_id: googlesignininfo.user.id,
+          device_id: token
 
         }
 
@@ -111,7 +116,7 @@ const Auth = (props) => {
         })
 
         if (response.data.data.name == '') {
-          props.navigation.replace("Filluserinfo",{
+          props.navigation.replace("Filluserinfo", {
             userinfo: response.data.data,
             token: response.data.token
           })
@@ -129,7 +134,6 @@ const Auth = (props) => {
       }
 
     }).catch((error) => {
-      console.log(error)
 
       setLoading(false)
 

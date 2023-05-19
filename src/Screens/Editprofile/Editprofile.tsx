@@ -55,6 +55,7 @@ export const EditProfile = (props: EditProfileprops) => {
                     takePermission().then((res) => {
                         if (res) {
                             pickImageVideo("image").then((res) => {
+
                                 setProfilePicUrl(res.path)
 
                             })
@@ -109,7 +110,6 @@ export const EditProfile = (props: EditProfileprops) => {
         }
         
         if (flag) {
-            console.log("onPress",flag)
             SaveintoDb()
 
         }

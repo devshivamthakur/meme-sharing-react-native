@@ -55,7 +55,7 @@ export const takeImageVideo = (type) => {
             param = {
                 ...param,
                 cropping: true,
-                compressImageQuality: 0.5
+                // compressImageQuality: 0.5
 
             }
         }

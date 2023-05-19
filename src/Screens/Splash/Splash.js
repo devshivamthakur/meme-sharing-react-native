@@ -29,6 +29,7 @@ const Splash = (props) => {
       if (value) {
         getAsyncStorage(USERINFO).then((value) => {
           dispatch(updateusertoken(JSON.parse(value).token ))
+          console.log(JSON.parse(value).token)
 
           dispatch(getuserinfothunk()).unwrap()
             .then((response) => {
@@ -45,7 +46,6 @@ const Splash = (props) => {
               saveToAsyncStorage(USERINFO, JSON.stringify(profileinfo))
               props.navigation.replace("SocialTab")
             }).catch((err) => {
-              console.log(err)
               ErrorMessage(err.response)
             })
         })

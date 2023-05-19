@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Image } from 'react-native'
-import React,{useState} from 'react'
+import React, { useState } from 'react'
 import LinerGradiantView from '../../Component/LinerGradiantView'
 import MyHeader from '../../Component/MyHeader'
 import { normalize } from '../../../Normalize'
@@ -16,10 +16,10 @@ import FastImage from 'react-native-fast-image'
 import {
   GoogleSignin,
 } from "@react-native-google-signin/google-signin";
-interface Settingsprops{
-  navigation:UserNavigationProp<"Settings">
+interface Settingsprops {
+  navigation: UserNavigationProp<"Settings">
 }
-const Settings = (props:Settingsprops) => {
+const Settings = (props: Settingsprops) => {
   const [isVisible, setIsVisible] = useState(false);
   const [error, setError] = useState("");
   const [errorTitle, setErrorTitle] = useState("");
@@ -28,18 +28,18 @@ const Settings = (props:Settingsprops) => {
   const [noVisible, setNoVisible] = useState(false);
   const [noBtnText, setNoBtnText] = useState("");
   const [isFrom, setIsFrom] = useState("");
-  const userinfo=useAppSelector(state=>state.userinfo.userinfo)
+  const userinfo = useAppSelector(state => state.userinfo.userinfo)
   const renderProfileInfoView = () => {
     return (
       <View
-        style={[styles.profieinfocontainer,{
+        style={[styles.profieinfocontainer, {
           flexDirection: "row",
 
         }]}
       >
         <FastImage
           style={styles.profileimg}
-          source={{ uri: IMAGEURL+userinfo.profileurl }}
+          source={{ uri: IMAGEURL + userinfo.profileurl }}
         />
 
         <View
@@ -61,50 +61,50 @@ const Settings = (props:Settingsprops) => {
       </View>
     );
   };
-  const onAlertClick=(param:string)=>{
+  const onAlertClick = (param: string) => {
     setIsVisible(false)
-    if(isFrom=="logout"&&param=="yes"){
+    if (isFrom == "logout" && param == "yes") {
       try {
-        GoogleSignin.isSignedIn().then((value)=>{
-          if(value){
+        GoogleSignin.isSignedIn().then((value) => {
+          if (value) {
 
             GoogleSignin.signOut()
           }
         })
-        
+
       } catch (error) {
-        
+
       }
       deleteAsyncStorage(IS_LOGIN)
       deleteAsyncStorage(USERINFO)
-      
+
       props.navigation.replace("Auth")
     }
   }
 
-  const onPressSettingsMenu=(index:number)=>{
-    switch(index){
+  const onPressSettingsMenu = (index: number) => {
+    switch (index) {
       case 0:
         props.navigation.navigate("Editprofile");
         break;
       case 1:
-        props.navigation.navigate("StaticManagement",{
-          type:"About us"
+        props.navigation.navigate("StaticManagement", {
+          type: "About us"
         })
         break;
       case 2:
-        props.navigation.navigate("StaticManagement",{
-          type:"Terms and Conditions"
+        props.navigation.navigate("StaticManagement", {
+          type: "Terms and Conditions"
         })
         break;
       case 3:
-        props.navigation.navigate("StaticManagement",{
-          type:"Privacy Policy"
+        props.navigation.navigate("StaticManagement", {
+          type: "Privacy Policy"
         })
         break;
       case 4:
         props.navigation.navigate("BlockedAccounts")
-        break;        
+        break;
       case 5:
         props.navigation.navigate("Deactivateaccount")
         break;
@@ -133,11 +133,11 @@ const Settings = (props:Settingsprops) => {
         renderProfileInfoView()
       }
       <SettingsMenu
-      profieinfocontainer={styles.profieinfocontainer}
-      onPressSettingsMenu={onPressSettingsMenu}
+        profieinfocontainer={styles.profieinfocontainer}
+        onPressSettingsMenu={onPressSettingsMenu}
       />
 
-{isVisible == true && (
+      {isVisible == true && (
         <MyCustomAlert
           alertImage={alertImage}
           alertVisible={isVisible}
@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
   },
   profileinfo: {
     marginLeft: 14,
-    height: 64,
+    height: 50,
     alignContent: "center",
     justifyContent: "center",
     flex: 1,

@@ -1,12 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { counterSlice } from './src/Redux/Reducers/Mytestreducer'
 import UserinfoSlice from './src/Redux/Reducers/UserinfoSlice'
+import  PostinfoSlice  from './src/Redux/Reducers/Postinfoslice'
 
 export const store = configureStore({
     reducer:{
     counter:counterSlice.reducer,
-    userinfo:UserinfoSlice
-        
+    userinfo:UserinfoSlice,
+    postinfo:PostinfoSlice
     }
 })
 

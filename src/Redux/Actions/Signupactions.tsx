@@ -28,7 +28,6 @@ export const GetInterestThunk = createAsyncThunk(
             })
             return response.data.data
         } catch (error: any) {
-            console.log(error.response)
             ErrorMessage(error.response)
             return rejectWithValue(error.response.data)
 
