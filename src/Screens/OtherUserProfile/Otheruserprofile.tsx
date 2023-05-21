@@ -6,22 +6,29 @@ import { AppStackParamList } from '../../Router';
 import { useAppDispatch, useAppSelector } from '../../Redux/Hooks';
 import { IMAGEURL } from '../../Apiendpoints';
 import { getOtherUserinfoAsync } from '../../Redux/Actions/Userinfoactions';
+import { useFocusEffect } from '@react-navigation/native';
+import { resetOtheruserinfoand_Userpost } from '../../Redux/Reducers/UserinfoSlice';
+
 type CreateScreenRouteProp = RouteProp<AppStackParamList, 'OtherUserProfile'>;
 interface OtherUserProfile_props{
-  route:CreateScreenRouteProp
+  route:CreateScreenRouteProp,
+
 }
 
 const Otheruserprofile = ({route}:OtherUserProfile_props) => {
   const dispatch = useAppDispatch()
   const userinfo = useAppSelector(state => state.userinfo.otherUserinfo)
+  useFocusEffect(
+    React.useCallback(() => {
 
-  useEffect(() => {
-    dispatch(getOtherUserinfoAsync(route.params.user_id))
+      dispatch(getOtherUserinfoAsync(route.params.user_id))
+      return () => {
+        // Do something when the screen is unfocused
+        // Useful for cleanup functions
+      };
+    }, [])
+  );
 
-    return () => {
-
-    }
-  }, [])
   return (
     <View
     style={styles.main}

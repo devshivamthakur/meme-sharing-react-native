@@ -5,6 +5,7 @@ import withPreventDoubleClick from './withPreventDoubleClick'
 import { UserPost } from '../Redux/Sliceinterface'
 import { IMAGEURL } from '../Apiendpoints'
 import { Fonts } from '../Theme'
+import { useNavigation_ } from './UseNavigation'
 const { width, height } = Dimensions.get("window")
 type RenderPostProps = {
     item: UserPost,
@@ -14,6 +15,7 @@ type RenderPostProps = {
 
 const TouchableOpacityex = withPreventDoubleClick(TouchableOpacity)
 const RenderPost = (props: RenderPostProps) => {
+    const navigate=useNavigation_("SocialTab")
     const isFirstRow = useMemo(() => {
         if (props.index == 0 || props.index == 1 || props.index == 2) {
             return true
@@ -77,7 +79,12 @@ const RenderPost = (props: RenderPostProps) => {
                 marginTop: isFirstRow ? 8 : 0,
 
             }]}
+            onPress={() => {
+
+                navigate.navigate("PostDetails", props.item)
+            }}
         >
+
             {PostComponent && <PostComponent />}
 
 

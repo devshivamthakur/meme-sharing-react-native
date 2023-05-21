@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, FlatList, TouchableOpacity } from 'react-native';
 import LinerGradiantView from '../../Component/LinerGradiantView';
 import MyHeader from '../../Component/MyHeader';
@@ -6,36 +6,66 @@ import { normalize } from '../../../Normalize';
 import CustomButton from '../../Component/CustomButton';
 import { Colors, Fonts } from '../../Theme';
 import UserNavigationProp from "../../Component/UserNavigationProp"
-interface Props{
-  navigation:UserNavigationProp<"Settings">
+import { blockaccount } from '../../Redux/Sliceinterface';
+import { useAppDispatch, useAppSelector } from '../../Redux/Hooks';
+import { BlockedListAsync, unBlockUserAsync } from '../../Redux/Actions/BlockaccountActions';
+import { alertmodal_dummy } from '../Home/Home';
+import { MyCustomAlert } from '../../Component/MyCustomAlert';
+interface Props {
+    navigation: UserNavigationProp<"Settings">
 }
-type BlockedAccount = {
-    id: string;
-    name: string;
-};
+
 
 const BlockedAccountsScreen: React.FC<Props> = (props) => {
-    const [blockedAccounts, setBlockedAccounts] = useState<BlockedAccount[]>([
-        { id: '1', name: 'John Doe' },
-        { id: '2', name: 'Jane Doe' },
-        { id: '3', name: 'Bob Smith' },
-    ]);
+  const [alertmodal, setAlertmodal] = useState(alertmodal_dummy);
+  const [id, setid] = useState(0);
 
-    const handleUnblock = (id: string) => {
-        setBlockedAccounts((prevAccounts) => prevAccounts.filter((account) => account.id !== id));
+    const Blockaccountlist = useAppSelector(state => state.blockedAccounts.blockedAccounts)
+    const dispatch = useAppDispatch()
+    useEffect(() => {
+        dispatch(BlockedListAsync())
+    }, [])
+    const handleUnblock = (id: number) => {
+        setid(id);
+        setAlertmodal({
+            isVisible: true,
+            error: "Are you sure you want to Unblock this user?",
+            errorTitle: "Block User",
+            alertImage: "",
+            buttonText: "Yes",
+            noVisible: true,
+            noBtnText: "No",
+            isFrom: "unblockuser"
+          });
+      
+        
+
+       
+
     };
-
-    const renderBlockedAccount = ({ item }: { item: BlockedAccount }) => (
+    const onAlertClick = (param: string) => {
+        let { isFrom } = alertmodal;
+        setAlertmodal(alertmodal_dummy);
+        if (isFrom == "unblockuser" && param == "yes") {
+    
+            let data = {
+                blocked_user_id: id
+            }
+            dispatch(unBlockUserAsync(data))
+    
+        }
+      }
+    const renderBlockedAccount = ({ item }: { item: blockaccount }) => (
         <View style={styles.accountContainer}>
-            <Text style={styles.accountName}>{item.name}</Text>
+            <Text style={styles.accountName}>{item.blocked_user.name}</Text>
             <CustomButton
-                onPress={() => handleUnblock(item.id)}
+                onPress={() => handleUnblock(item.blocked_user.id)}
                 buttonStyle={styles.btn2}
                 title="Unblock"
                 textStyle={styles.btntxt}
                 linerColor={['#FF7F00', '#FF0080']}
             />
-           
+
         </View>
     );
 
@@ -53,15 +83,27 @@ const BlockedAccountsScreen: React.FC<Props> = (props) => {
 
             />
             <FlatList
-                data={blockedAccounts}
+                data={Blockaccountlist}
                 style={{
 
                 }}
                 renderItem={renderBlockedAccount}
-                keyExtractor={(item) => item.id}
+                keyExtractor={(item) => item.id.toString()}
                 contentContainerStyle={styles.listContainer}
                 ListEmptyComponent={() => <Text style={styles.emptyList}>No blocked accounts found.</Text>}
             />
+             {alertmodal.isVisible == true && (
+        <MyCustomAlert
+          alertImage={alertmodal.alertImage}
+          alertVisible={alertmodal.isVisible}
+          noVisible={alertmodal.noVisible}
+          onRequestClose={(param) => onAlertClick(param)}
+          error={alertmodal.error}
+          errorTitle={alertmodal.errorTitle}
+          buttonText={alertmodal.buttonText}
+          noBtnText={alertmodal.noBtnText}
+        />
+      )}
         </LinerGradiantView>
     );
 };
@@ -105,7 +147,7 @@ const styles = StyleSheet.create({
     },
     accountName: {
         fontSize: normalize(14),
-        color:Colors.black
+        color: Colors.black
     },
     unblockButton: {
         backgroundColor: '#007AFF',

@@ -1,4 +1,4 @@
-import { View, Text, FlatList } from 'react-native'
+import { View, Text, FlatList,RefreshControl } from 'react-native'
 import React, { useEffect } from 'react'
 import LinerGradiantView from './LinerGradiantView'
 import MemoHoc from './MemoHoc'
@@ -14,9 +14,12 @@ const ProfileView = (props: Profileview_) => {
   const dispatch=useAppDispatch()
   const navigation=useNavigation_("OtherUserProfile")
   const State=useAppSelector(state=>state.userinfo)
+  const [refreshing,setrefreshing]=React.useState(false)
   useEffect(()=>{
-    dispatch(getUserPost_thunk(props.user_id))
-  },[])
+    setTimeout(() => {
+      dispatch(getUserPost_thunk(props.user_id))
+    }, 1000);
+  },[props])
 
   return (
     <LinerGradiantView
@@ -24,6 +27,21 @@ const ProfileView = (props: Profileview_) => {
       <FlatList
         data={State.userpost}
         numColumns={3}
+        refreshControl={
+          <RefreshControl
+
+            refreshing={refreshing}
+            onRefresh={() => {
+              setrefreshing(true)
+              dispatch(getUserPost_thunk(props.user_id))
+              setTimeout(() => {
+                
+                setrefreshing(false)
+              }, 2000);
+            }}
+
+          />
+        }
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item, index }) => {
           if (item.post_type!="text"&& item.media.length==0){
@@ -39,6 +57,7 @@ const ProfileView = (props: Profileview_) => {
           )
 
         }}
+
         contentContainerStyle={{
           // backgroundColor: "#fff",
 
@@ -52,6 +71,7 @@ const ProfileView = (props: Profileview_) => {
           onPressBackButton={()=>{
             navigation.goBack()
           }}
+
 
 
         />}

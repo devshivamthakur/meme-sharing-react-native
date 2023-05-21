@@ -19,7 +19,7 @@ import { updatemodalloader } from '../Reducers/UserinfoSlice';
 
   export const getUserPost_thunk = createAsyncThunk(
     'fetchuserpost',  
-    async (userid,{getState}) => {
+    async (userid:number,{getState}) => {
       
       
       const response = await axios.get(GET_USER_POSTAPI+userid, {

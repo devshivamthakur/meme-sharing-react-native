@@ -30,7 +30,7 @@ export const CreatePost_thunk = createAsyncThunk(
 
 export const Get_post_list_thunk = createAsyncThunk(
     'getPostlist',
-    async (pageno:number, { rejectWithValue, getState }) => {
+    async (pageno: number, { rejectWithValue, getState }) => {
         try {
 
             const response = await axios({
@@ -53,12 +53,11 @@ export const Get_post_list_thunk = createAsyncThunk(
 interface LikeDislike_ {
     status: boolean,
     postid: number,
-    index: number
 }
 
-export const LikeDislikeasync= createAsyncThunk(
+export const LikeDislikeasync = createAsyncThunk(
     'likeDislike',
-    async ({ status, postid,index }: LikeDislike_, { rejectWithValue, getState }) => {
+    async ({ status, postid }: LikeDislike_, { rejectWithValue, getState }) => {
         try {
 
             const response = await axios({
@@ -76,13 +75,14 @@ export const LikeDislikeasync= createAsyncThunk(
 
             if (response.status === 200) {
                 return {
-                    index: index,
-                    status: status
+                    status: status,
+                    post_id: postid,
                 }
-            }else{
+            } else {
                 return {
-                    index: -1,
-                    status: null
+                    status: null,
+                    post_id: -1,
+
                 }
             }
 
@@ -99,7 +99,7 @@ interface BlockUser_ {
 }
 export const BlockUserAsync = createAsyncThunk(
     'BlockUserAsync',
-    async (args:BlockUser_, { rejectWithValue, getState,dispatch }) => {
+    async (args: BlockUser_, { rejectWithValue, getState, dispatch }) => {
         try {
             dispatch(updatemodalloader(true))
 
@@ -116,7 +116,7 @@ export const BlockUserAsync = createAsyncThunk(
             showMessage({
                 message: "User Blocked Successfully.",
                 type: "success",
-                icon:"success",
+                icon: "success",
                 duration: 3000,
 
             })

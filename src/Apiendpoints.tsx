@@ -21,6 +21,8 @@ export const LikeDislike_API=BASE_URL+"like_dislike"
 ////////////////////////block user //////////////////
 
 export const BLOCK_USER_API=BASE_URL+"blockusers/block_user/"
+export const UNBLOCK_USER_API=BASE_URL+"blockusers/unblock_user/"
+export const BLOCKED_USER_LIST_API=BASE_URL+"blockusers/block_list/"
 
 
 

@@ -15,27 +15,28 @@ import { resetOtheruserinfoand_Userpost } from '../../Redux/Reducers/UserinfoSli
 const { width, height } = Dimensions.get("window")
 const TouchableOpacityEx = withPreventDoubleClick(TouchableOpacity);
 interface PostHeaderprops {
-    MenuPress:(selected_index:number)=>void,
+    MenuPress?: (selected_index: number) => void,
     profileImage?: string,
     username: string,
     time?: string,
     user_id: number,
-    index:number
+    index: number,
+    hidemenu_btn: boolean|false
 
 }
-const PostHeader = ({ MenuPress, profileImage, username, time,user_id ,index}: PostHeaderprops) => {
+const PostHeader = ({ MenuPress, profileImage, username, time, user_id, index, hidemenu_btn }: PostHeaderprops) => {
     const navigation = useNavigation_Tab("Myprofile")
-    const navigation_2=useNavigation_("SocialTab")
-    const Userinfo=useAppSelector(state=>state.userinfo.userinfo)
-const Dispatch=useAppDispatch()
+    const navigation_2 = useNavigation_("SocialTab")
+    const Userinfo = useAppSelector(state => state.userinfo.userinfo)
+    const Dispatch = useAppDispatch()
     const onPressProfile = () => {
         Dispatch(resetOtheruserinfoand_Userpost())
-        
+
         if (Userinfo.id == user_id) {
             navigation.navigate("Myprofile")
-        }else{
-            navigation_2.navigate("OtherUserProfile",{
-                user_id:user_id
+        } else {
+            navigation_2.navigate("OtherUserProfile", {
+                user_id: user_id
             })
         }
     }
@@ -77,9 +78,12 @@ const Dispatch=useAppDispatch()
                 </TouchableOpacityEx>
             </View>
 
-          {Userinfo.id!=user_id&&  <TouchableOpacityEx
+            {Userinfo.id != user_id &&!hidemenu_btn&&<TouchableOpacityEx
                 onPress={() => {
-                    MenuPress(index)
+                    if (MenuPress) {
+
+                        MenuPress(index)
+                    }
                 }}
             >
 

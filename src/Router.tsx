@@ -17,6 +17,8 @@ import Otheruserprofile from './Screens/OtherUserProfile/Otheruserprofile';
 import MyTest from '../MyTest';
 import { useAppSelector } from './Redux/Hooks';
 import Modalloader from './Component/Modalloader';
+import PostDetails from './Screens/PostDetails/PostDetails';
+import { UserPost } from './Redux/Sliceinterface';
 export type AppStackParamList = {
   Splash: undefined;
   Auth: undefined;
@@ -36,6 +38,7 @@ export type AppStackParamList = {
   OtherUserProfile:{
     user_id:number
   },
+  PostDetails:UserPost
 };
 const Stack = createNativeStackNavigator<AppStackParamList>();
 const Router = () => {
@@ -69,6 +72,7 @@ const isLogin=useAppSelector(state=>state.userinfo.islogin)
         <Stack.Screen name="Filluserinfo" component={Filluserinfo} />
        
         <Stack.Screen name="MyTest" component={MyTest}/>
+        <Stack.Screen name="PostDetails" component={PostDetails}/>
 
 
         {

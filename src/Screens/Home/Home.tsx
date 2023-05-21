@@ -26,7 +26,7 @@ const { height } = Dimensions.get("window")
 const estimatedItemSize = height * 0.61
 
 const TouchableOpacityex = withPreventDoubleClick(TouchableOpacity)
-let alertmodal_dummy={
+export let alertmodal_dummy={
   isVisible: false,
   error: "",
   errorTitle: "",
@@ -103,6 +103,7 @@ const Home = () => {
 
   }
   const PostList_ = useMemo(() => {
+    
     return PostList
   }, [PostList])
   useEffect(() => {
@@ -118,6 +119,7 @@ const Home = () => {
           item={item}
           MenuPress={openMenu}
           index={index}
+          hidemenu_btn={false}
         />
       </MemoHoc>
     );
@@ -149,6 +151,7 @@ const Home = () => {
         estimatedItemSize={estimatedItemSize}
         ListHeaderComponent={Header_()}
         renderItem={renderPost}
+        extraData={{}}
         refreshControl={
           <RefreshControl
             refreshing={PostinfoSlice.loading}

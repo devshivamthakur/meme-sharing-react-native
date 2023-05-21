@@ -18,7 +18,7 @@ interface CustomButtonProps{
     onPress?:()=>void,
     textStyle?:object,
     buttonStyle?:object,
-    linerColor?:[],
+    linerColor?:string[],
     imageStyle?:object,
     disableLinear?:false|boolean
 

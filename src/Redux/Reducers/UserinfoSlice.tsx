@@ -3,6 +3,7 @@ import type { PayloadAction } from '@reduxjs/toolkit'
 import { GetInterestThunk, updateUserinfothunk } from '../Actions/Signupactions'
 import { getOtherUserinfoAsync, getUserPost_thunk, getuserinfothunk } from '../Actions/Userinfoactions'
 import { UserPost, Userinfo } from '../Sliceinterface'
+import { LikeDislikeasync } from '../Actions/Postinfoactions'
 export interface CounterState {
   islogin: boolean,
   InterestList: any,
@@ -74,6 +75,7 @@ export const UserinfoSlice = createSlice({
     resetOtheruserinfoand_Userpost:(state)=>{
       state.userpost=[]
       state.otherUserinfo={...initialState.otherUserinfo}
+      
     }
   },
   extraReducers: (builder) => {
@@ -101,9 +103,21 @@ export const UserinfoSlice = createSlice({
       state.showModalLoader=false
 
     })
-
-
-
+    builder.addCase(LikeDislikeasync.fulfilled, (state, {payload}) => {
+      if (payload.status !== null) {
+        state.userpost = state.userpost.map((post) => {
+          if (post.id === payload.post_id) {
+            post.is_liked = payload.status?1:0
+            if (payload.status) {
+              post.total_likes += 1
+            } else if (!payload.status&&post.total_likes>0) {
+              post.total_likes -= 1
+            }
+          }
+          return post
+        })
+      } 
+    })
   }
 
 

@@ -16,7 +16,7 @@ interface PostFooterprops {
   is_liked: number | null,
   mediaLength: number,
   post_id: number,
-  index: number
+  index: number,
 }
 const PostFooter = (props: PostFooterprops) => {
   const [isLiked, setisLiked] = useState(false)
@@ -28,8 +28,7 @@ const PostFooter = (props: PostFooterprops) => {
     setisdisliked(props.is_liked == 0)
     setTotalLikes(props.totalLikes | 0)
 
-
-  },[props.post_id])
+  },[props])
   const UpdateLikeDislike = useCallback(
     (status: boolean) => {
 
@@ -42,7 +41,6 @@ const PostFooter = (props: PostFooterprops) => {
           dispatch(LikeDislikeasync({
             status: true,
             postid: props.post_id,
-            index: props.index
           }))
 
         }
@@ -58,7 +56,6 @@ const PostFooter = (props: PostFooterprops) => {
           dispatch(LikeDislikeasync({
             status: false,
             postid: props.post_id,
-            index: props.index
 
           }))
 

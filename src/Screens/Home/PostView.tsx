@@ -5,21 +5,19 @@ import PostHeader from '../../Component/PostCoomponent/PostHeader'
 import PostMedia from '../../Component/PostCoomponent/PostMedia'
 import PostFooter from '../../Component/PostCoomponent/PostFooter'
 import { UserPost } from '../../Redux/Sliceinterface'
-import Animated, {
-  useAnimatedStyle,
-  withTiming,
-} from 'react-native-reanimated';
-interface postViewprops{
+
+ interface postViewprops{
   item:UserPost,
-  MenuPress:(selected_index:number)=>void,
+  MenuPress?:(selected_index:number)=>void,
   index:number,
+  hidemenu_btn:boolean|false,
 
 }
-const PostView = ({item,MenuPress,index}:postViewprops) => {
+const PostView = ({item,MenuPress,index,hidemenu_btn}:postViewprops) => {
   const [activeindex, setactiveindex] = React.useState<number>(0)
  
   return (
-    <Animated.View
+    <View
     style={[styles.main,]}
     
     >
@@ -30,6 +28,7 @@ const PostView = ({item,MenuPress,index}:postViewprops) => {
       time={item.created_at}
       user_id={item.user.id}
       index={index}
+      hidemenu_btn={hidemenu_btn}
       />
       
       { <PostMedia
@@ -50,7 +49,7 @@ const PostView = ({item,MenuPress,index}:postViewprops) => {
       index={index}
       />
 
-    </Animated.View>
+    </View>
   )
 }
 

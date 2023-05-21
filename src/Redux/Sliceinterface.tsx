@@ -48,3 +48,17 @@ export interface postinfoapiresponse{
   page:number
 }
 
+
+/////////////////////// blocked Accounts ///////////////////////
+export interface BlockedAccount {
+  blockedAccounts: blockaccount[]
+
+}
+
+export interface blockaccount {
+  id: number
+  created_at: string
+  blocked_by: number
+  blocked_user: Userinfo
+}
+

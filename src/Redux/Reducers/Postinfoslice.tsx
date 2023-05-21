@@ -38,11 +38,12 @@ export const PostinfoSlice = createSlice({
     }
     )
     builder.addCase(LikeDislikeasync.fulfilled, (state, { payload }) => {
+      console.log(payload)
       if (payload.status !== null) {
-        state.Postlist[payload.index].is_liked = payload.status ? 1 : 0
-
-        state.Postlist[payload.index].total_likes = payload.status ? state.Postlist[payload.index].total_likes + 1 : state.Postlist[payload.index].total_likes > 0 ? state.Postlist[payload.index].total_likes - 1 : 0
-        console.log(state.Postlist[payload.index].is_liked)
+        let postId=payload.post_id
+        const findindex_=state.Postlist.findIndex((item: UserPost) => item.id === postId)
+        state.Postlist[findindex_].is_liked = payload.status ? 1 : 0
+        state.Postlist[findindex_].total_likes = payload.status ? state.Postlist[findindex_].total_likes + 1 : state.Postlist[findindex_].total_likes > 0 ? state.Postlist[findindex_].total_likes - 1 : 0
       }
 
     })
